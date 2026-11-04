@@ -11,7 +11,8 @@ Parent objective: #1. Business plan: [../business/business-plan.md](../business/
 - **Acceptance:** dev and test use the console sender; the HTTP sender maps provider
   errors to a typed error with retryable/permanent classification.
 - **Dependencies:** none.
-- **Tests:** unit tests with a stubbed `fetch` for success, 4xx (permanent), 5xx (retryable).
+- **Tests:** unit tests with a stubbed `fetch` for success, 4xx other than 429 (permanent),
+  429 and 5xx (retryable, honouring `Retry-After` when present).
 
 ## M1-02 Magic-link sign-in and sessions
 

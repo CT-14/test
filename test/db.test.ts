@@ -18,6 +18,28 @@ describe("migrate", () => {
     });
   });
 
+  it("rejects missing and NULL ids", () => {
+    const db = openDatabase(":memory:");
+    migrate(db);
+    expect(() =>
+      db.prepare("INSERT INTO accounts (name) VALUES (?)").run("Acme"),
+    ).toThrow(/NOT NULL/);
+    expect(() =>
+      db
+        .prepare("INSERT INTO accounts (id, name) VALUES (NULL, ?)")
+        .run("Acme"),
+    ).toThrow(/NOT NULL/);
+    db.prepare("INSERT INTO accounts (id, name) VALUES (?, ?)").run(
+      "acc_1",
+      "Acme",
+    );
+    expect(() =>
+      db
+        .prepare("INSERT INTO users (account_id, email) VALUES (?, ?)")
+        .run("acc_1", "a@example.com"),
+    ).toThrow(/NOT NULL/);
+  });
+
   it("rolls back a failing migration and reports its name", () => {
     const dir = mkdtempSync(join(tmpdir(), "lapsewise-migrations-"));
     writeFileSync(join(dir, "0001_ok.sql"), "CREATE TABLE a (id INTEGER);");

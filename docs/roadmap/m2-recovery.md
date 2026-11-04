@@ -27,8 +27,10 @@ Parent objective: #1. This milestone is the product's core value.
 
 - **Objective:** track each failed invoice from failure to outcome.
 - **Requirements:** `recoveries` table (`open`, `recovered`, `lost`) with amount, currency,
-  decline code, attribution (`lapsewise` if paid via our card-update link or after our email
-  click, else `stripe`); classifier mapping Stripe decline codes to `expired_card`,
+  decline code, attribution (`lapsewise` if paid through our card-update page, `assisted` if a
+  Stripe retry paid it after an email click, else `stripe`). This is a direct-attribution
+  heuristic, not a measured incremental lift: proving incrementality needs a holdout group,
+  which is out of scope for M2; classifier mapping Stripe decline codes to `expired_card`,
   `insufficient_funds`, `authentication_required`, `generic`.
 - **Acceptance:** the event sequences failed → paid and failed → uncollectible end in the right state.
 - **Dependencies:** M2-02.
@@ -47,10 +49,12 @@ Parent objective: #1. This milestone is the product's core value.
 ## M2-05 Hosted card-update page
 
 - **Objective:** let the end customer update their card in one click.
-- **Requirements:** `/u/:token` with a signed, expiring, single-recovery token; Stripe Elements
-  with a SetupIntent on the connected account; on success set the default payment method and
-  retry the open invoice; customer branding; no card data on our servers.
-- **Acceptance:** test-mode card update pays the invoice and marks the recovery `lapsewise`.
+- **Requirements:** `/u/:token` with a signed, expiring token scoped to one Stripe customer and,
+  optionally, one recovery; Stripe Elements with a SetupIntent on the connected account; on
+  success set the default payment method and, when the token names a recovery, retry its open
+  invoice; customer branding; no card data on our servers.
+- **Acceptance:** test-mode card update pays the invoice and marks the recovery `lapsewise`; a
+  token without a recovery (pre-dunning, M2-06) updates the card and retries nothing.
 - **Dependencies:** M2-04.
 - **Tests:** token signing and expiry; handler tests with stubbed Stripe client.
 
@@ -58,7 +62,8 @@ Parent objective: #1. This milestone is the product's core value.
 
 - **Objective:** email customers before their card expires.
 - **Requirements:** daily job listing active subscriptions whose default card expires this or next
-  month; one email per card per month with a card-update link.
+  month; one email per card per month with a customer-scoped card-update link (M2-05, no
+  recovery or invoice).
 - **Acceptance:** no duplicate emails across days.
 - **Dependencies:** M2-03 (and M2-05 for the link).
 - **Tests:** job tests with stubbed Stripe list responses.

@@ -22,10 +22,10 @@ export function createLogger(
       if (order[at] < order[level]) return;
       write(
         JSON.stringify({
+          ...fields,
           time: new Date().toISOString(),
           level: at,
           msg,
-          ...fields,
         }),
       );
     };

@@ -71,9 +71,12 @@ providers. These are roadmap candidates once revenue validates the core.
 
 1. **Price floor below the incumbents** so the product pays for itself at
    $3k MRR [A].
-2. **Transparent attribution**: the dashboard separates revenue recovered by
-   Lapsewise emails and card updates from revenue Stripe would have recovered
-   anyway, so the customer sees honest incremental value [A]. Several
+2. **Transparent attribution**: the dashboard separates revenue paid through
+   Lapsewise card-update pages, revenue a Stripe retry collected after a
+   Lapsewise email click, and revenue Stripe collected on its own, so the
+   customer sees an honest estimate of Lapsewise's share [A]. This is direct
+   attribution, not measured incremental lift; a holdout test would be needed
+   to prove the lift. Several
    competitors report a single blended number [A, to verify].
 3. **Five-minute setup**: OAuth connect, defaults on, done.
 4. **Guarantee**: if recovered revenue is below the subscription fee in a

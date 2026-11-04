@@ -19,4 +19,16 @@ describe("createLogger", () => {
     logger.error("kept");
     expect(lines).toHaveLength(1);
   });
+
+  it("keeps its own metadata when fields use the same keys", () => {
+    const lines: string[] = [];
+    createLogger("info", (line) => lines.push(line)).error("failed", {
+      level: "info",
+      msg: undefined,
+      time: "x",
+    });
+    const record = JSON.parse(lines[0] ?? "");
+    expect(record).toMatchObject({ level: "error", msg: "failed" });
+    expect(record.time).not.toBe("x");
+  });
 });
