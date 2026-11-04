@@ -1,0 +1,32 @@
+{
+  "name": "lapsewise",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Failed-payment recovery for small Stripe subscription businesses",
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc -p tsconfig.build.json",
+    "start": "node dist/server.js",
+    "test": "vitest run",
+    "lint": "biome check .",
+    "format": "biome check --write .",
+    "typecheck": "tsc --noEmit",
+    "check": "npm run lint && npm run typecheck && npm test"
+  },
+  "dependencies": {
+    "@hono/node-server": "^2.1.6",
+    "hono": "^4.13.16",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.6.5",
+    "@types/node": "^24",
+    "tsx": "^4.23.15",
+    "typescript": "^5.9",
+    "vitest": "^5.1.0"
+  }
+}
